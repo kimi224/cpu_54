@@ -1,0 +1,1 @@
+`define HEX_RESULT_PRINT_LIMIT 149

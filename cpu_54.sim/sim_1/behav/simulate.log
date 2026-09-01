@@ -1,0 +1,38 @@
+# do {_246tb_ex10_tb_simulate.do}
+# vsim -voptargs=""+acc"" -L unisims_ver -L unimacro_ver -L secureip -L dist_mem_gen_v8_0_10 -L xil_defaultlib -lib xil_defaultlib xil_defaultlib._246tb_ex10_tb xil_defaultlib.glbl 
+# Start time: 10:29:08 on Sep 01,2026
+# //  ModelSim PE 10.4c Jul 20 2015 
+# //
+# //  Copyright 1991-2015 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //  THIS DOCUMENT CONTAINS TRADE SECRETS AND COMMERCIAL OR FINANCIAL
+# //  INFORMATION THAT ARE PRIVILEGED, CONFIDENTIAL, AND EXEMPT FROM
+# //  DISCLOSURE UNDER THE FREEDOM OF INFORMATION ACT, 5 U.S.C. SECTION 552.
+# //  FURTHERMORE, THIS INFORMATION IS PROHIBITED FROM DISCLOSURE UNDER
+# //  THE TRADE SECRETS ACT, 18 U.S.C. SECTION 1905.
+# //
+# Loading xil_defaultlib._246tb_ex10_tb
+# Loading xil_defaultlib.sccomp_dataflow
+# Loading xil_defaultlib.sccpu
+# Loading xil_defaultlib.regfile
+# Loading xil_defaultlib.scinstmem
+# Loading xil_defaultlib.imem
+# Loading dist_mem_gen_v8_0_10.dist_mem_gen_v8_0_10
+# Loading xil_defaultlib.scdatamem
+# Loading xil_defaultlib.glbl
+# .main_pane.wave.interior.cs.body.pw.wf
+# .main_pane.structure.interior.cs.body.struct
+# .main_pane.objects.interior.cs.body.tree
+# WARNING: This core is supplied with a behavioral model. To model cycle-accurate behavior you must run timing simulation.
+# ** Warning: (vsim-PLI-3408) Too few data words read on line 1320 of file "imem.mif". Expected 2048, found 1319.    : ../../../cpu_54.ip_user_files/ipstatic/dist_mem_gen_v8_0_10/simulation/dist_mem_gen_v8_0.v(234)
+#    Time: 0 ps  Iteration: 0  Instance: /_246tb_ex10_tb/uut/imem/imem/inst
+# ** Note: $finish    : ../../../cpu_54.srcs/sim_1/new/testbench_cpu54_single.v(105)
+#    Time: 105350 ns  Iteration: 0  Instance: /_246tb_ex10_tb
+# 1
+# Break in Module _246tb_ex10_tb at ../../../cpu_54.srcs/sim_1/new/testbench_cpu54_single.v line 105
+# End time: 10:30:52 on Sep 01,2026, Elapsed time: 0:01:44
+# Errors: 0, Warnings: 1

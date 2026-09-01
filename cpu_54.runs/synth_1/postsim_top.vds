@@ -1,0 +1,633 @@
+#-----------------------------------------------------------
+# Vivado v2016.2 (64-bit)
+# SW Build 1577090 on Thu Jun  2 16:32:40 MDT 2016
+# IP Build 1577682 on Fri Jun  3 12:00:54 MDT 2016
+# Start of session at: Tue Sep 01 11:05:36 2026
+# Process ID: 24932
+# Current directory: D:/computer_composition/cpu_54/cpu_54.runs/synth_1
+# Command line: vivado.exe -log postsim_top.vds -mode batch -messageDb vivado.pb -notrace -source postsim_top.tcl
+# Log file: D:/computer_composition/cpu_54/cpu_54.runs/synth_1/postsim_top.vds
+# Journal file: D:/computer_composition/cpu_54/cpu_54.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source postsim_top.tcl -notrace
+Command: synth_design -top postsim_top -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 1652 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:06 . Memory (MB): peak = 306.023 ; gain = 98.902
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'postsim_top' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/postsim_top.v:3]
+	Parameter IO_SWITCH_DATA bound to: 0 - type: integer 
+	Parameter PC_RESET bound to: 4194304 - type: integer 
+	Parameter EXC_ENTRY bound to: 4194308 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'sccpu' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/sccpu.v:3]
+	Parameter PC_RESET bound to: 4194304 - type: integer 
+	Parameter EXC_ENTRY bound to: 4194308 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'regfile' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/regfile.v:3]
+INFO: [Synth 8-256] done synthesizing module 'regfile' (1#1) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/regfile.v:3]
+INFO: [Synth 8-256] done synthesizing module 'sccpu' (2#1) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/sccpu.v:3]
+INFO: [Synth 8-638] synthesizing module 'scinstmem' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scinstmem.v:3]
+INFO: [Synth 8-638] synthesizing module 'imem' [D:/computer_composition/cpu_54/cpu_54.runs/synth_1/.Xil/Vivado-24932-szy/realtime/imem_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'imem' (3#1) [D:/computer_composition/cpu_54/cpu_54.runs/synth_1/.Xil/Vivado-24932-szy/realtime/imem_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'scinstmem' (4#1) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scinstmem.v:3]
+INFO: [Synth 8-638] synthesizing module 'scdatamem' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scdatamem.v:3]
+	Parameter DEPTH bound to: 512 - type: integer 
+	Parameter BASE_ADDR bound to: 268500992 - type: integer 
+	Parameter IO_SWITCH_ADDR bound to: 268566528 - type: integer 
+	Parameter ADDR_W bound to: 9 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "distributed" *) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scdatamem.v:34]
+INFO: [Synth 8-256] done synthesizing module 'scdatamem' (5#1) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scdatamem.v:3]
+INFO: [Synth 8-256] done synthesizing module 'postsim_top' (6#1) [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/postsim_top.v:3]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[31]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[30]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[29]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[28]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[27]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[26]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[25]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[24]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[23]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[22]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[21]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[20]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[19]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[18]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[17]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[16]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[15]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[14]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[13]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[1]
+WARNING: [Synth 8-3331] design scinstmem has unconnected port addr[0]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 445.539 ; gain = 238.418
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:10 . Memory (MB): peak = 445.539 ; gain = 238.418
+---------------------------------------------------------------------------------
+WARNING: [Project 1-486] Could not resolve non-primitive black box cell 'imem' instantiated as 'imem/imem' [D:/computer_composition/cpu_54/cpu_54.srcs/sources_1/new/scinstmem.v:11]
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [D:/computer_composition/cpu_54/cpu_54.runs/synth_1/.Xil/Vivado-24932-szy/dcp/imem_in_context.xdc] for cell 'imem/imem'
+Finished Parsing XDC File [D:/computer_composition/cpu_54/cpu_54.runs/synth_1/.Xil/Vivado-24932-szy/dcp/imem_in_context.xdc] for cell 'imem/imem'
+Parsing XDC File [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[0]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:4]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[1]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:5]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[2]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:6]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[3]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:7]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[4]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:8]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[5]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:9]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[6]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:10]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[7]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:11]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[0]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:13]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[1]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:14]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[2]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:15]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[3]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:16]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[4]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:17]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[5]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:18]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[6]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:19]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[7]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:20]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[7]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:23]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[6]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:24]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[5]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:25]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[4]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:26]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[3]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:27]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[2]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:28]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[1]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:29]
+WARNING: [Vivado 12-584] No ports matched 'o_sel[0]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:30]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[7]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:32]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[6]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:33]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[5]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:34]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[4]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:35]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[3]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:36]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[2]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:37]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[1]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:38]
+WARNING: [Vivado 12-584] No ports matched 'o_seg[0]'. [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc:39]
+Finished Parsing XDC File [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/postsim_top_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [D:/computer_composition/cpu_54/cpu_54.srcs/constrs_1/new/icf.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/postsim_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/postsim_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.025 . Memory (MB): peak = 719.113 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:15 ; elapsed = 00:00:21 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:15 ; elapsed = 00:00:21 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:15 ; elapsed = 00:00:21 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5546] ROM "array_reg_reg[31]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[30]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[29]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[28]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[27]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[26]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[25]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[24]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[23]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[22]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[21]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[20]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[19]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[18]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[17]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[16]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[15]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[14]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[13]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[12]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[11]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[10]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[9]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[8]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[7]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[6]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[5]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[4]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[3]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[2]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[1]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "array_reg_reg[0]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_store_size" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_load_size" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_load_unsigned" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "reg_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "reg_we" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5546] ROM "reg_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "pc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "hi_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "lo_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_status_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_cause_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_epc_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_reg8_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_store_size" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_load_size" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mem_load_unsigned" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "reg_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "reg_we" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5546] ROM "reg_we" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "pc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "hi_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "lo_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_status_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_cause_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_epc_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "cp0_reg8_next" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "reg_wdata0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "reg_wdata0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "reg_wdata0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "reg_wdata0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "div_dividend" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "exception_code" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "ram_reg[0]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[1]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[2]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[3]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[4]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[5]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[6]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[7]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[8]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[9]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[10]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[11]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[12]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[13]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[14]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[15]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[16]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[17]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[18]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[19]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[20]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[21]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[22]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[23]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[24]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[25]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[26]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[27]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[28]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[29]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[30]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[31]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[32]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[33]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[34]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[35]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[36]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[37]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[38]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[39]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[40]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ram_reg[41]" won't be mapped to RAM because it is too sparse
+INFO: [Common 17-14] Message 'Synth 8-5546' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:26 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |scdatamem__GB0   |           1|     29822|
+|2     |scdatamem__GB1   |           1|      9331|
+|3     |postsim_top__GC0 |           1|     12528|
++------+-----------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   4 Input     64 Bit       Adders := 1     
+	   2 Input     64 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 9     
+	   3 Input     32 Bit       Adders := 2     
+	  32 Input     32 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 1     
++---XORs : 
+	   2 Input     32 Bit         XORs := 2     
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	               32 Bit    Registers := 555   
+	                6 Bit    Registers := 1     
+	                1 Bit    Registers := 3     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 1     
+	   3 Input     32 Bit        Muxes := 3     
+	   2 Input     32 Bit        Muxes := 33    
+	   4 Input     32 Bit        Muxes := 1     
+	  33 Input     32 Bit        Muxes := 2     
+	  24 Input     32 Bit        Muxes := 1     
+	   6 Input     32 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 1     
+	   4 Input      8 Bit        Muxes := 1     
+	   4 Input      6 Bit        Muxes := 1     
+	  24 Input      6 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 2     
+	  27 Input      5 Bit        Muxes := 1     
+	   4 Input      5 Bit        Muxes := 1     
+	  24 Input      3 Bit        Muxes := 1     
+	  27 Input      2 Bit        Muxes := 2     
+	  24 Input      2 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 588   
+	   3 Input      1 Bit        Muxes := 1     
+	  24 Input      1 Bit        Muxes := 9     
+	   7 Input      1 Bit        Muxes := 4     
+	  27 Input      1 Bit        Muxes := 3     
+	   5 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module scdatamem 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 512   
++---Muxes : 
+	   3 Input     32 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 5     
+	   4 Input     32 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 1     
+	   4 Input      8 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 512   
+Module regfile 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 32    
++---Muxes : 
+	  33 Input     32 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 32    
+Module sccpu 
+Detailed RTL Component Info : 
++---Adders : 
+	   4 Input     64 Bit       Adders := 1     
+	   2 Input     64 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 9     
+	   3 Input     32 Bit       Adders := 2     
+	  32 Input     32 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 1     
++---XORs : 
+	   2 Input     32 Bit         XORs := 2     
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	               32 Bit    Registers := 11    
+	                6 Bit    Registers := 1     
+	                1 Bit    Registers := 3     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     32 Bit        Muxes := 28    
+	   3 Input     32 Bit        Muxes := 1     
+	  24 Input     32 Bit        Muxes := 1     
+	   6 Input     32 Bit        Muxes := 1     
+	   4 Input      6 Bit        Muxes := 1     
+	  24 Input      6 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 2     
+	  27 Input      5 Bit        Muxes := 1     
+	   4 Input      5 Bit        Muxes := 1     
+	  24 Input      3 Bit        Muxes := 1     
+	  27 Input      2 Bit        Muxes := 2     
+	  24 Input      2 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 44    
+	   3 Input      1 Bit        Muxes := 1     
+	  24 Input      1 Bit        Muxes := 9     
+	   7 Input      1 Bit        Muxes := 4     
+	  27 Input      1 Bit        Muxes := 3     
+	   5 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:19 ; elapsed = 00:00:27 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+DSP Report: Generating DSP mult_pp1, operation Mode is: A*B.
+DSP Report: operator mult_pp1 is absorbed into DSP mult_pp1.
+DSP Report: Generating DSP mult_pp2, operation Mode is: A*B.
+DSP Report: operator mult_pp2 is absorbed into DSP mult_pp2.
+DSP Report: Generating DSP mult_pp3, operation Mode is: A*B.
+DSP Report: operator mult_pp3 is absorbed into DSP mult_pp3.
+DSP Report: Generating DSP mult_pp0, operation Mode is: A*B.
+DSP Report: operator mult_pp0 is absorbed into DSP mult_pp0.
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:22 ; elapsed = 00:00:31 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:22 ; elapsed = 00:00:31 . Memory (MB): peak = 719.113 ; gain = 511.992
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |scdatamem__GB0   |           1|     29822|
+|2     |scdatamem__GB1   |           1|      9587|
+|3     |postsim_top__GC0 |           1|     13599|
++------+-----------------+------------+----------+
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping  Report (see note below)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|sccpu       | A*B         | 16     | 16     | -      | -      | 32     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|sccpu       | A*B         | 16     | 16     | -      | -      | 32     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|sccpu       | A*B         | 16     | 16     | -      | -      | 32     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|sccpu       | A*B         | 16     | 16     | -      | -      | 32     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][31]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][30]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][29]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][28]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][27]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][26]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][25]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][24]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][23]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][22]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][21]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][20]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][19]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][18]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][17]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][16]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][15]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][14]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][13]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][12]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][11]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][10]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][9]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][8]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][7]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][6]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][5]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][4]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][3]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][2]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][1]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (array_reg_reg[0][0]) is unused and will be removed from module regfile.
+WARNING: [Synth 8-3332] Sequential element (div_remainder_reg[31]) is unused and will be removed from module sccpu.
+WARNING: [Synth 8-3332] Sequential element (div_quotient_reg[31]) is unused and will be removed from module sccpu.
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:55 ; elapsed = 00:01:07 . Memory (MB): peak = 719.113 ; gain = 511.992
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:55 ; elapsed = 00:01:07 . Memory (MB): peak = 719.113 ; gain = 511.992
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |scdatamem__GB0   |           1|     29421|
+|2     |scdatamem__GB1   |           1|      5511|
+|3     |postsim_top__GC0 |           1|      9535|
++------+-----------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:03 ; elapsed = 00:01:17 . Memory (MB): peak = 818.332 ; gain = 611.211
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:12 ; elapsed = 00:01:26 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |scdatamem__GB0   |           1|     29421|
+|2     |scdatamem__GB1   |           1|      5511|
+|3     |postsim_top__GC0 |           1|      9595|
++------+-----------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:20 ; elapsed = 00:01:36 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:01:20 ; elapsed = 00:01:36 . Memory (MB): peak = 942.703 ; gain = 735.582
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:01:20 ; elapsed = 00:01:36 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:21 ; elapsed = 00:01:39 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:21 ; elapsed = 00:01:39 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:23 ; elapsed = 00:01:43 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:23 ; elapsed = 00:01:43 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:24 ; elapsed = 00:01:44 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:24 ; elapsed = 00:01:44 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |imem          |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+--------+------+
+|      |Cell    |Count |
++------+--------+------+
+|1     |imem    |     1|
+|2     |BUFG    |     1|
+|3     |CARRY4  |   142|
+|4     |DSP48E1 |     4|
+|5     |LUT1    |   242|
+|6     |LUT2    |   331|
+|7     |LUT3    |   306|
+|8     |LUT4    |   414|
+|9     |LUT5    |   543|
+|10    |LUT6    |  6318|
+|11    |MUXF7   |  2456|
+|12    |MUXF8   |  1024|
+|13    |FDRE    | 17734|
+|14    |FDSE    |     1|
+|15    |IBUF    |     2|
+|16    |OBUF    |   128|
++------+--------+------+
+
+Report Instance Areas: 
++------+------------+----------+------+
+|      |Instance    |Module    |Cells |
++------+------------+----------+------+
+|1     |top         |          | 29678|
+|2     |  dmem      |scdatamem | 23994|
+|3     |  imem      |scinstmem |   833|
+|4     |  sccpu     |sccpu     |  4720|
+|5     |    cpu_ref |regfile   |  3893|
++------+------------+----------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:24 ; elapsed = 00:01:44 . Memory (MB): peak = 942.703 ; gain = 735.582
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 34 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:12 ; elapsed = 00:01:34 . Memory (MB): peak = 942.703 ; gain = 433.125
+Synthesis Optimization Complete : Time (s): cpu = 00:01:24 ; elapsed = 00:01:45 . Memory (MB): peak = 942.703 ; gain = 735.582
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 148 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+WARNING: [Netlist 29-101] Netlist 'postsim_top' is not ideal for floorplanning, since the cellview 'scdatamem' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+134 Infos, 90 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:27 ; elapsed = 00:01:53 . Memory (MB): peak = 942.703 ; gain = 711.324
+report_utilization: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.094 . Memory (MB): peak = 942.703 ; gain = 0.000
+INFO: [Common 17-206] Exiting Vivado at Tue Sep 01 11:07:36 2026...
