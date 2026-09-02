@@ -1,358 +1,478 @@
-# cpu_54
+# cpu_54 —— 同济大学计算机组成原理 54 条指令 MIPS CPU
 
-同济大学计算机组成原理 54 条指令 CPU 实验工程。本工程基于已经完成的 31 条指令 CPU 继续开发，当前完成了前仿真、单指令回归、除法/CP0 专项验证、后实现时序检查和下板 bitstream 生成，并在 Vivado 2016.2 下通过 20MHz 时序约束。
+一个在 Vivado 2016.2 下实现的 **54 条指令 MIPS 单周期 CPU**（`div/divu` 采用内部多周期迭代除法器），
+已完成前仿真、单指令回归、CP0/除法专项验证、20MHz 后实现时序检查和下板 bitstream 生成。
 
-## 当前状态
+目标器件：`xc7a100tcsg324-1`（Artix-7）
 
-- CPU 类型：54 条指令 MIPS CPU。
-- 主体实现：以单周期执行为主，`div/divu` 使用内部多周期迭代除法器以保证可综合和可下板时序。
-- 前仿真：使用 Vivado XSim 运行老师 `testbench_cpu54_single.v`，输出与 `_246tb_ex10_result.txt` 逐行一致。
-- 除法专项验证：老师 `54_div.hex.txt/.result.txt`、`33_divu.hex.txt/.result.txt` 均通过。
-- 全量单指令验证：`54条CPUtest指令示例和测试说明` 下 49 组 `.hex.txt/.result.txt` 全部通过，覆盖 54 条指令。
-- CP0 专项验证：按 `CP0test.txt` 自行组织 `break/syscall/teq/eret` 异常处理程序，验证 `$10/$11/$12`、`Status/Cause/EPC` 和 `eret` 返回，已通过。
-- 后实现时序：20MHz 通过，`timing_report.txt` 中 setup 最差 slack 为 `13.120ns`，并显示 `All user specified timing constraints are met.`
-- 下板 bitstream：已生成 `cpu_54.runs/board_direct/test.bit`，下板顶层为 `test.v`，七段数码管显示当前 PC；默认约每 0.5 秒执行一步（约 2 步/秒）。
-- 文档：`CPU54实验报告.md`、`CPU54_操作时间表及控制信号逻辑表达式.xlsx`，以及 `datapath_diagrams/`、`instruction_flow_diagrams/` 图集。
+---
 
-## 目录结构
+## 1. 仓库结构（文件夹树形图）
 
 ```text
 cpu_54/
-|-- README.md
-|-- cpu_54.xpr
-|-- timing_report.txt
-|-- postsim_top.dcp
-|-- postsim_timesim.v
-|-- postsim_timesim.sdf
-|-- datapath_diagrams/
-|   |-- cpu54_total_datapath.png
-|   `-- 每条指令数据通路图（共 54 张）
-|-- instruction_flow_diagrams/
-|   `-- 每条指令流程图（共 54 张）
-|-- cpu_54.srcs/
-|   |-- sources_1/new/
-|   |   `-- CPU RTL、前/后仿真顶层、下板顶层和七段数码管模块
-|   |-- sources_1/ip/imem/
-|   |   `-- imem.xci、imem.mif、imem.v 和 IP 仿真模型
-|   |-- sim_1/new/testbench_cpu54_single.v
-|   `-- constrs_1/new/icf.xdc
-|-- materials/cpu54_frontsim/
-|   `-- 老师 testbench、COE 和标准结果文件
-`-- verify/
-    `-- Vivado XSim 仿真、单指令回归、CP0、除法、后仿真和下板脚本
+├── .gitattributes
+├── .gitignore
+├── LICENSE
+├── README.md
+│
+├── CPU54实验报告.md                          # 实验报告（设计说明、波形、结论）
+├── CPU54_操作时间表及控制信号逻辑表达式.xlsx   # 54 条指令操作时间表 + 控制信号逻辑表达式
+│
+├── cpu_54.xpr                               # Vivado 2016.2 工程文件
+├── cpu_54.srcs/                             # Vivado 工程源码（RTL / 约束 / 仿真 / IP）
+│   ├── constrs_1/new/
+│   │   ├── icf.xdc                          # 下板约束（时钟周期 50ns = 20MHz）
+│   │   ├── postsim_20ns.xdc                 # 时序扫描用约束
+│   │   └── postsim_100ns.xdc
+│   ├── sim_1/new/
+│   │   ├── testbench_cpu54_single.v         # 前仿真 TB（老师 TB + $finish）
+│   │   └── postsim_tb.v                     # 后仿真 TB
+│   └── sources_1/
+│       ├── new/                             # 手写 RTL（本工程核心）
+│       │   ├── sccpu.v                      # CPU 主体：数据通路 + CP0 + 异常/中断入口
+│       │   ├── sccontroller.v               # 控制器
+│       │   ├── scalu.v                      # ALU
+│       │   ├── regfile.v                    # 32×32 寄存器堆
+│       │   ├── scpc.v                       # PC 寄存器
+│       │   ├── scinstmem.v                  # 指令 ROM 封装（仿真）
+│       │   ├── scdatamem.v                  # 数据 RAM
+│       │   ├── sccomp_dataflow.v            # 前仿真顶层
+│       │   ├── postsim_top.v                # 综合 / 实现 / 时序检查顶层
+│       │   ├── scinstmem_board.v            # 下板用指令 ROM 封装
+│       │   ├── scdatamem_postsim.v          # 后仿真用数据 RAM
+│       │   ├── cpu54_board.v                # 下板：慢速 clk_en 驱动 CPU
+│       │   ├── test.v                       # 下板顶层（连接 seg7x16）
+│       │   ├── seg7x16.v                    # 七段数码管驱动（老师提供）
+│       │   ├── cpu31_board.v                # 31 条指令阶段的遗留顶层
+│       │   └── mips_54_mars_simulate.mem    # MARS 导出的 mem 镜像
+│       └── ip/imem/                         # Vivado Distributed Memory Generator IP
+│           ├── imem.xci / imem.xml / imem.mif / imem.dcp
+│           ├── sim/imem.v                   # IP 仿真模型（读取 imem.mif）
+│           ├── synth/imem.vhd
+│           ├── imem_sim_netlist.v / .vhdl   # 后仿真网表
+│           └── dist_mem_gen_v8_0_10/        # IP 自带 HDL 与仿真模型
+│
+├── datapath_diagrams/                       # 56 张数据通路图（54 条指令 + add_rtype + 总图）
+├── instruction_flow_diagrams/               # 54 张指令流程图
+│
+├── materials/                               # 课程下发资料（第三方版权，见第 9 节）
+│   ├── cpu54_frontsim/
+│   │   ├── mips_54_mars_simulate_student_ForWeb_2024.coe   # 标准测试程序 COE
+│   │   ├── _246tb_ex10_result.txt                          # 前仿真标准结果
+│   │   ├── testbench_cpu54_single.v / testbench_cpu54_multiple.v
+│   │   └── 54条指令CPU_testbench_coe和结果比对文件说明.pdf
+│   └── docs/                                # 课件 PDF（实验 5 / 实验 6 / 中断 / 扩展指令）
+│
+├── verify/                                  # 自动化验证脚本（克隆后的主要入口）
+│   ├── run_frontsim_web.ps1                 # 前仿真 + 与标准结果逐行比对
+│   ├── convert_hex_to_coe.ps1               # .hex.txt -> .coe / .mif
+│   ├── run_hex_result_check.ps1             # 单条 .hex.txt 用例：仿真 + 逐行比对
+│   ├── run_all_hex_result_checks.ps1        # 批量跑目录下全部用例
+│   ├── run_cp0_check.ps1                    # CP0 / 异常专项（break / syscall / teq / eret）
+│   ├── run_div_check.ps1                    # 除法器单元测试
+│   ├── run_postsim_timing.tcl               # 综合 + 实现 + 时序报告 + 后仿真网表/SDF
+│   ├── run_board_bitstream_direct.tcl       # 直接生成下板 bitstream
+│   ├── run_postsim_timesim.ps1              # 用网表 + SDF 跑时序仿真
+│   ├── run_postsim_xsim.tcl                 # 后仿真 xsim 批处理
+│   ├── run_timing_sweep.ps1                 # 多时钟周期时序扫描
+│   ├── repair_imem_ip.tcl                   # 修复 / 重新生成 imem IP
+│   ├── compare_web_result.ps1               # 比对仿真输出与标准结果
+│   ├── testbench_cp0.v / testbench_hex_result.v / tb_div_check.v / testbench_postsim_timesim.v
+│   ├── cp0test.hex.txt                      # CP0 专项测试程序
+│   ├── converted/                           # 生成的 .coe / .mif（用例转换产物）
+│   └── logs/                                # 每次回归的日志与摘要
+│
+├── tmp/                                     # 文档 / 图形生成脚本与临时文件
+│   ├── create_timing_table.py
+│   ├── generate_cpu54_diagrams.py
+│   ├── make_add_datapath.py
+│   ├── update_total_datapath.py
+│   ├── postsim_current.xdc                  # 时序脚本运行时生成的约束
+│   └── imem.mif.before_single_tests         # 跑回归前的 imem.mif 备份
+│
+├── imem.mif                                 # 当前生效的 ROM 初始化文件（脚本会覆盖它）
+├── _246tb_ex10_result.txt                   # 前仿真输出（与 materials 中的标准结果比对）
+├── hex_result_config.vh                     # 回归脚本生成的打印上限宏
+├── hex_result_output.txt                    # 单指令回归最后一次的输出
+├── timing_report.txt                        # 20MHz 时序报告
+├── postsim_top.dcp                          # 综合后 checkpoint
+├── postsim_timesim.v / postsim_timesim.sdf  # 后仿真网表与延时文件
+│
+└── cpu_54.runs/  cpu_54.sim/  cpu_54.cache/  cpu_54.hw/  cpu_54.ip_user_files/  xsim.dir/  .Xil/
+    # Vivado 生成的中间目录：历史提交中曾包含副本，属于中间产物，
+    # 现已由 .gitignore 忽略，克隆后重新运行工程或脚本即可再生。
 ```
 
-## 主要文件说明
+---
 
-`cpu_54.srcs/sources_1/new/sccpu.v`  
-CPU 主体。支持 54 条指令实验需要的算术逻辑、移位、访存、分支跳转、HI/LO、CP0、中断异常入口和 `eret`。CP0 支持 `Status(12)`、`Cause(13)`、`EPC(14)`，并为老师 `mfc0/mtc0` 单测补充了 CP0 `8` 号寄存器读写。为解决时序问题，`div/divu` 改为内部多周期迭代除法器：执行除法时 PC 暂停，完成后写入 HI/LO 并继续执行。这样不会综合出超长组合除法器。
+## 2. 目录（TOC）
 
-`cpu_54.srcs/sources_1/new/sccomp_dataflow.v`  
-前仿真顶层，实例化 `sccpu`、`scinstmem`、`scdatamem`，对外提供老师 testbench 观察的 `pc` 和 `inst`。
+- [1. 仓库结构（文件夹树形图）](#1-仓库结构文件夹树形图)
+- [2. 目录（TOC）](#2-目录toc)
+- [3. 项目简介](#3-项目简介)
+- [4. 功能与验证状态](#4-功能与验证状态)
+- [5. 环境要求](#5-环境要求)
+- [6. 安装与构建（克隆后第一次运行）](#6-安装与构建克隆后第一次运行)
+- [7. 使用说明](#7-使用说明)
+  - [7.1 前仿真（行为级仿真）](#71-前仿真行为级仿真)
+  - [7.2 单指令回归测试](#72-单指令回归测试)
+  - [7.3 CP0 / 异常专项测试](#73-cp0--异常专项测试)
+  - [7.4 除法器单元验证](#74-除法器单元验证)
+  - [7.5 后实现时序检查](#75-后实现时序检查)
+  - [7.6 生成下板 bitstream](#76-生成下板-bitstream)
+  - [7.7 使用 Vivado GUI 复现](#77-使用-vivado-gui-复现)
+- [8. 目录结构说明](#8-目录结构说明)
+- [9. 第三方材料声明](#9-第三方材料声明)
+- [10. 许可证](#10-许可证)
 
-`cpu_54.srcs/sources_1/new/postsim_top.v`  
-后实现/时序检查顶层。用于综合、布局布线、生成 `timing_report.txt`、`postsim_timesim.v` 和 `postsim_timesim.sdf`。
+---
 
-`cpu_54.srcs/sources_1/new/scinstmem.v`  
-指令 ROM 封装，内部实例化 Vivado `imem` IP。地址换算为 `word_addr = addr[12:2]`。
+## 3. 项目简介
 
-`CPU54实验报告.md`、`datapath_diagrams/`、`instruction_flow_diagrams/`  
-实验报告、54 条指令的单条数据通路图/流程图以及总数据通路图。
+本工程是同济大学《计算机组成原理》课程「实验 6：54 条指令 CPU 设计」的完整实现，
+在已完成的 31 条指令 CPU 基础上扩展而来，主要特点：
 
-`CPU54_操作时间表及控制信号逻辑表达式.xlsx`  
-包含 54 条指令操作时间表和控制信号逻辑表达式表。普通指令为 `T0` 单周期，`div/divu` 为 `T0` 启动、`T1-T32` 迭代、`T33` 提交。
+- **指令集**：覆盖课程要求的 54 条 MIPS 指令，包括算术逻辑、移位、访存（`lb/lbu/lh/lhu/lw/sb/sh/sw`）、
+  分支跳转、HI/LO（`mult/multu/mfhi/mthi/mflo/mtlo`）、`clz`，以及 CP0 相关指令
+  （`mfc0/mtc0/break/syscall/teq/eret`）。
+- **执行方式**：整体为单周期 CPU；`div/divu` 使用内部多周期迭代除法器（执行期间 PC 暂停，
+  完成后写入 HI/LO 再继续），避免综合出超长组合除法器，从而满足下板时序。
+- **CP0**：实现 `Status(12)`、`Cause(13)`、`EPC(14)`，并为课程 `mfc0/mtc0` 单测补充了 CP0 `8` 号寄存器读写。
+- **顶层划分**：
+  - `sccomp_dataflow.v`：前仿真顶层，供老师 testbench 观察 `pc` 与 `inst`；
+  - `postsim_top.v`：综合 / 实现 / 时序检查顶层，暴露 `pc/inst/mem0/mem1`；
+  - `test.v`：下板顶层，连接 `seg7x16.v`，数码管显示当前 PC。
+- **验证体系**：`verify/` 下提供一套 PowerShell / Tcl 脚本，可一键完成「转换用例 → 编译 → 仿真 → 逐行比对」，
+  以及时序检查与 bitstream 生成。
 
-`cpu_54.srcs/sources_1/ip/imem/imem.xci`  
-Vivado `Distributed Memory Generator` IP。宽度 32 位，深度 2048，初始化来自老师下发的 `.coe`，生成的 `imem.mif` 与 `imem.v` 一起用于仿真、后仿真和下板。
+---
 
-`cpu_54.xpr`  
-Vivado 2016.2 工程文件，器件为 `xc7a100tcsg324-1`，工程目标仿真器为 Vivado XSim，默认下板顶层为 `test`。
+## 4. 功能与验证状态
 
-`cpu_54.srcs/sim_1/new/testbench_cpu54_single.v`  
-老师单周期前仿真 testbench 副本，保留文件名。工程中只增加了 `$finish`，方便 `xsim -runall` 自动结束。
+| 项目 | 结果 |
+| --- | --- |
+| 前仿真（老师标准程序） | `web result matched 35836 lines OK` |
+| 全量单指令回归（49 组用例） | `ALL_HEX_CASES_PASSED 49` |
+| 除法专项（`54_div`、`33_divu`） | 各 `matched 14722 lines OK` |
+| CP0 专项（`break/syscall/teq/eret`） | `CP0 CHECK PASS` |
+| 后实现时序（20MHz） | Setup WNS `13.120ns`，`All user specified timing constraints are met.` |
+| 下板 bitstream | `cpu_54.runs/board_direct/test.bit` 生成成功 |
 
-`verify/convert_hex_to_coe.ps1`  
-把老师单指令测试里的 `.hex.txt` 转成标准 Vivado `.coe`。同时可生成 IP 仿真模型读取的二进制 `.mif`。
+标准输出说明：老师标准结果共有 `1054 × 34 = 35836` 行，其中每个结果块包含 `pc`、`instr` 和 32 个通用寄存器。
 
-`verify/run_hex_result_check.ps1`  
-读取 `.hex.txt` 和对应 `.result.txt`，自动转换、仿真并逐行比对。脚本兼容 MARS 风格跳转 PC 显示、分支实际执行条数、以及 `add/sub` 溢出测试末尾只给出部分结果块的格式。
+---
 
-`verify/run_all_hex_result_checks.ps1`  
-遍历老师 `54条CPUtest指令示例和测试说明` 目录下全部 `.hex.txt/.result.txt`，逐个调用 `run_hex_result_check.ps1`。本轮结果为 `ALL_HEX_CASES_PASSED 49`，摘要保存在 `verify/logs/hex_result_summary.txt`。
+## 5. 环境要求
 
-`verify/run_cp0_check.ps1`  
-把 `verify/cp0test.hex.txt` 临时写入 `imem.mif`，运行 `testbench_cp0.v`。该测试按老师 `CP0test.txt` 的含义验证 `break/syscall/teq` 进入异常处理、`Cause` 低 8 位分别为 `0x24/0x20/0x34`、`eret` 返回异常指令后一条，且最终 `$10/$11/$12 = ffffffff`。
+| 依赖 | 版本 / 说明 |
+| --- | --- |
+| 操作系统 | Windows（脚本为 PowerShell；Vivado 2016.2 官方支持 Windows / Linux，但本仓库脚本仅在 Windows 下验证过） |
+| Vivado | **2016.2**（WebPACK 及以上均可），需包含 XSim 仿真器 |
+| 器件支持 | Artix-7 器件库，目标器件 `xc7a100tcsg324-1` |
+| PowerShell | 5.1 及以上（Windows 自带） |
+| Python（可选） | 3.x，仅用于 `tmp/` 下的报告与图形生成脚本 |
 
-`verify/run_postsim_timing.tcl`  
-Vivado batch 脚本，执行综合、布局布线、时序报告、利用率报告、时序仿真网表和 SDF 生成。
+> **重要**：`verify/*.ps1` 中 Vivado 安装路径**是硬编码的**，默认值为
+> `C:\Xilinx\Vivado\2016.2\bin`。如果你的安装路径不同，请先按下文 [6.2](#62-配置-vivado-路径) 修改。
 
-`cpu_54.srcs/sources_1/new/cpu54_board.v` 和 `test.v`  
-下板顶层。`cpu54_board.v` 用慢速 `clk_en` 驱动 CPU，`test.v` 连接老师给的 `seg7x16.v`，当前显示数据为 PC，便于观察程序是否在执行。
+> 说明：本仓库不需要额外的第三方 IP，`cpu_54.srcs/sources_1/ip/imem/` 下已包含生成好的 `imem` IP
+> 及其仿真模型，克隆后可直接仿真与综合。
 
-## 前仿真
+---
 
-在工程根目录运行：
+## 6. 安装与构建（克隆后第一次运行）
+
+### 6.1 获取代码
+
+```bash
+git clone https://github.com/kimi224/cpu_54.git
+cd cpu_54
+```
+
+### 6.2 配置 Vivado 路径
+
+以下脚本中第 3 行左右的 `$vivadoBin` 需要与实际安装路径一致：
+
+- `verify/run_frontsim_web.ps1`
+- `verify/run_hex_result_check.ps1`
+- `verify/run_cp0_check.ps1`
+- `verify/run_div_check.ps1`
+- `verify/run_postsim_timesim.ps1`
+- `verify/run_timing_sweep.ps1`（变量名为 `$vivado`）
+
+将
+
+```powershell
+$vivadoBin = "C:\Xilinx\Vivado\2016.2\bin"
+```
+
+改为你的实际路径，例如：
+
+```powershell
+$vivadoBin = "D:\Xilinx\Vivado\2016.2\bin"
+```
+
+### 6.3 第一次验证（推荐按此顺序）
+
+```powershell
+# 1) 前仿真：跑老师标准程序并与标准结果逐行比对
+powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_frontsim_web.ps1
+
+# 2) CP0 / 异常专项（不需要外部用例文件）
+powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_cp0_check.ps1
+
+# 3) 除法器单元测试（不需要外部用例文件）
+powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_div_check.ps1
+```
+
+三条命令都必须在**仓库根目录**执行（脚本内部使用相对路径）。
+
+### 6.4 打开 Vivado 工程（可选）
+
+1. 启动 Vivado 2016.2 → `Open Project` → 选择仓库根目录下的 `cpu_54.xpr`。
+2. 首次打开若提示 IP 状态异常，可在 Vivado Tcl Console 中执行：
+
+```tcl
+source verify/repair_imem_ip.tcl
+```
+
+3. 若 Vivado 报告 `imem` IP 需要升级，按提示 `Upgrade` 后重新 `Generate Output Products`。
+
+---
+
+## 7. 使用说明
+
+> 所有命令均在**仓库根目录**执行；若系统限制了脚本执行，统一加 `-ExecutionPolicy Bypass`。
+
+### 7.1 前仿真（行为级仿真）
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_frontsim_web.ps1
 ```
 
-最终结果：
+脚本行为：
+
+1. 把 `cpu_54.srcs/sources_1/ip/imem/imem.mif` 复制到仓库根目录 `imem.mif`；
+2. 依次执行 `xvlog` → `xelab` → `xsim -runall`（TB 顶层：`_246tb_ex10_tb`）；
+3. 调用 `verify/compare_web_result.ps1` 与 `materials/cpu54_frontsim/_246tb_ex10_result.txt` 逐行比对。
+
+预期输出：
 
 ```text
 web result matched 35836 lines OK
 ```
 
-说明：老师标准输出共有 `1054 * 34 = 35836` 行，每个结果块包含 `pc`、`instr` 和 32 个通用寄存器。
+### 7.2 单指令回归测试
 
-## `.hex.txt` 转 `.coe`
+课程资料目录 `54条CPUtest指令示例和测试说明` 中的 `.hex.txt`（每行一条 32 位机器码）与
+`.result.txt`（MARS 风格标准输出）**未随本仓库分发**（属课程资料，见第 9 节）。
+克隆者需自备该目录，并把它作为 `-CaseDir` 传入。
 
-老师在 `54条CPUtest指令示例和测试说明` 中提供了很多 `.hex.txt` 和 `.result.txt`。`.hex.txt` 每行是一条 32 位十六进制机器码，转换成 Vivado 标准 `.coe` 的格式如下：
-
-```text
-memory_initialization_radix = 16;
-memory_initialization_vector =
-00000000,
-20017fff,
-...
-00000000;
-```
-
-转换命令示例：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File verify\convert_hex_to_coe.ps1 `
-  -HexPath "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明\54_div.hex.txt" `
-  -CoePath verify\converted\54_div.coe `
-  -MifPath verify\converted\54_div.mif
-```
-
-注意：`.coe` 是 Vivado GUI 重新配置 ROM IP 时使用的标准初始化文件；`imem.mif` 是当前 `imem` 仿真模型直接读取的文件，内容为 32 位二进制行。
-
-## 除法专项验证
-
-老师单独提供的除法测试使用 `.hex.txt/.result.txt`，目标结果比对文件是 `.result.txt`。本工程已加入自动比对脚本。
-
-有符号除法：
+**跑单个用例：**
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_hex_result_check.ps1 `
-  -HexPath "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明\54_div.hex.txt" `
-  -ExpectedPath "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明\54_div.result.txt"
+  -HexPath  "<用例目录>\54_div.hex.txt" `
+  -ExpectedPath "<用例目录>\54_div.result.txt"
 ```
 
-通过结果：
+预期输出：
 
 ```text
 hex result matched 14722 lines OK: 54_div
 ```
 
-无符号除法：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_hex_result_check.ps1 `
-  -HexPath "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明\33_divu.hex.txt" `
-  -ExpectedPath "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明\33_divu.result.txt"
-```
-
-通过结果：
-
-```text
-hex result matched 14722 lines OK: 33_divu
-```
-
-这里的 testbench 使用“指令执行完成后打印”的 MARS 风格，同时只在 PC 改变时打印，因此可兼容多周期除法等待周期。
-
-## 全量单指令与 CP0 验证
-
-全量 MARS 风格单指令测试：
+**跑目录下全部用例（49 组）：**
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_all_hex_result_checks.ps1 `
-  -CaseDir "C:\大学\计算机组成原理\实验指导书\54条指令CPU实验相关文档\54条CPUtest指令示例和测试说明"
+  -CaseDir "<用例目录>"
 ```
 
-本轮通过结果：
+预期输出：
 
 ```text
 ALL_HEX_CASES_PASSED 49
 ```
 
-说明：该目录中不是 54 个物理 `.hex.txt` 文件，而是 49 组测试，其中部分文件覆盖多条指令，例如 `16.26_lwsw`、`42.45_mfc0mtc0`。`syscall`、`break`、`teq`、`eret` 不按 MARS 内置系统调用标准比对，使用下面的 CP0 专项语义测试。
+摘要写入 `verify/logs/hex_result_summary.txt`，每个用例的详细日志在 `verify/logs/*.log`。
 
-CP0 专项测试：
+> 用例目录中不是 54 个物理文件，而是 49 组测试，部分文件覆盖多条指令（如 `16.26_lwsw`、
+> `42.45_mfc0mtc0`）。`syscall`、`break`、`teq`、`eret` 不按 MARS 内置系统调用语义比对，
+> 由 [7.3](#73-cp0--异常专项测试) 的 CP0 专项测试覆盖。
+
+**用例格式转换（.hex.txt → .coe / .mif）：**
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File verify\convert_hex_to_coe.ps1 `
+  -HexPath "<用例目录>\54_div.hex.txt" `
+  -CoePath verify\converted\54_div.coe `
+  -MifPath verify\converted\54_div.mif
+```
+
+- `.coe`：Vivado GUI 重新配置 ROM IP 时使用的标准初始化文件；
+- `.mif`：当前 `imem` 仿真模型直接读取的文件，内容为 32 位二进制行（脚本会覆盖根目录 `imem.mif`）。
+
+### 7.3 CP0 / 异常专项测试
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_cp0_check.ps1
 ```
 
-本轮通过结果：
+脚本把 `verify/cp0test.hex.txt` 转成 `imem.mif` 后运行 `verify/testbench_cp0.v`，
+验证 `break/syscall/teq` 进入异常、`Cause` 低 8 位分别为 `0x24/0x20/0x34`、
+`eret` 返回异常指令的下一条，最终 `$10/$11/$12 = ffffffff`。
+结束后会**自动恢复**根目录的 `imem.mif`。
+
+预期输出：
 
 ```text
 CP0 CHECK PASS: break/syscall/teq/eret handlers executed
 ```
 
-`CP0test.txt` 中异常入口布局为前两条跳转加空槽：`0x00400004` 是 `nop`，`0x00400008` 才是 `j _exceptions`。本 CPU 没有实现 MIPS 延迟槽，因此 CP0 专项 testbench 设置 `EXC_ENTRY = 32'h00400008` 来匹配该测试程序的异常处理入口。
+> `CP0test.txt` 的异常入口布局为「前两条跳转 + 空槽」，`0x00400008` 才是真正的 `j _exceptions`。
+> 本 CPU 未实现 MIPS 延迟槽，因此该 testbench 中设置 `EXC_ENTRY = 32'h00400008`。
 
-## 后实现时序检查
+### 7.4 除法器单元验证
 
-20MHz 时序检查命令：
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File verify\run_div_check.ps1
+```
+
+直接对 `sccpu.v` 中的迭代除法器做单元测试（TB：`verify/tb_div_check.v`），不需要外部用例文件。
+
+### 7.5 后实现时序检查
 
 ```powershell
 $env:CPU54_PERIOD_NS = "50.000"
 & "C:\Xilinx\Vivado\2016.2\bin\vivado.bat" -mode batch -source verify\run_postsim_timing.tcl
 ```
+
+- `CPU54_PERIOD_NS` 为时钟周期（ns），不设置时默认 `20.000`；下板约束为 `50.000`（20MHz）。
+- 生成的临时约束写入 `tmp/postsim_current.xdc`。
 
 生成文件：
 
-- `timing_report.txt`
-- `timing_paths.txt`
-- `utilization_report.txt`
-- `postsim_top.dcp`
-- `postsim_timesim.v`
-- `postsim_timesim.sdf`
+| 文件 | 说明 |
+| --- | --- |
+| `timing_report.txt` | 时序汇总报告 |
+| `timing_paths.txt` | 关键路径明细 |
+| `utilization_report.txt` | 资源利用率 |
+| `postsim_top.dcp` | 综合后 checkpoint |
+| `postsim_timesim.v` / `postsim_timesim.sdf` | 后仿真网表与延时文件 |
 
-已备份通过版本：
-
-- `timing_report_20MHz_pass.txt`
-- `timing_paths_20MHz_pass.txt`
-- `utilization_report_20MHz_pass.txt`
-
-最终时序结果：
+通过判据（20MHz）：
 
 ```text
 Setup Worst Slack = 13.120ns
-Hold Worst Slack  = 0.004ns
-TNS(ns) = 0.000
 All user specified timing constraints are met.
 ```
 
-本轮优化前，组合乘法/除法会形成 `pc -> imem -> regfile -> HI/LO` 的超长路径，10MHz 也曾出现负 slack。解决方式是保留乘法可综合实现，并把 `div/divu` 改成内部多周期迭代除法器，避免综合出 32 位组合除法器。最终 20MHz 通过。
+时序设计说明：组合乘法/除法原本会形成 `pc → imem → regfile → HI/LO` 的超长路径，
+10MHz 下也曾出现负 slack。解决方式是保留可综合的乘法实现，并把 `div/divu` 改为内部多周期迭代除法器，
+最终 20MHz 通过。
 
-## Vivado GUI 前仿真复现
-
-1. 打开 Vivado，选择 `Open Project`，打开 `cpu_54.xpr`。
-2. 在 `Sources` 面板确认以下文件在 `Design Sources`：
-   - `sccpu.v`
-   - `regfile.v`
-   - `scdatamem.v`
-   - `scinstmem.v`
-   - `sccomp_dataflow.v`
-   - `imem.xci`
-3. 在 `Simulation Sources` 中确认有：
-   - `testbench_cpu54_single.v`
-4. 若 IP 没生成，右键 `imem.xci`，选择 `Generate Output Products`。
-5. 若要重新导入老师正式 `.coe`：
-   - 双击 `imem.xci`
-   - 找到初始化文件选项，选择 `materials/cpu54_frontsim/mips_54_mars_simulate_student_ForWeb_2024.coe`
-   - 保存后重新 `Generate Output Products`
-6. 在 Flow Navigator 中点击 `Run Simulation` -> `Run Behavioral Simulation`。
-7. 仿真结束后查看工程根目录或仿真目录中的 `_246tb_ex10_result.txt`。
-8. 用 `verify/compare_web_result.ps1` 或手动 diff 与 `materials/cpu54_frontsim/_246tb_ex10_result.txt` 比对。
-
-## Vivado GUI 时序检查复现
-
-1. 打开 `cpu_54.xpr`。
-2. 确认 `postsim_top.v` 已加入 `Design Sources`。
-3. 确认约束文件 `cpu_54.srcs/constrs_1/new/icf.xdc` 存在，20MHz 约束为：
-
-```tcl
-create_clock -period 50.000 -name clk_pin -waveform {0.000 25.000} [get_ports clk_in]
-set_input_delay -clock [get_clocks *] 1.000 [get_ports reset]
-set_output_delay -clock [get_clocks *] 0.000 [get_ports -filter { NAME =~  "*" && DIRECTION == "OUT" }]
-```
-
-4. 在 `Sources` 中右键 `postsim_top.v`，设为综合顶层。
-5. 点击 `Run Synthesis`。
-6. 综合完成后点击 `Run Implementation`。
-7. 实现完成后点击 `Open Implemented Design`。
-8. 在菜单中选择 `Reports` -> `Timing` -> `Report Timing Summary`。
-9. 保存报告到工程根目录，命名为 `timing_report.txt`。
-10. 检查报告中是否出现：
-
-```text
-All user specified timing constraints are met.
-```
-
-命令行脚本 `verify/run_postsim_timing.tcl` 做的是同一件事，只是更容易复现实验结果和保存报告。
-
-## 后仿真复现
-
-后仿真使用 `postsim_top.v` 作为综合/实现顶层，不是下板顶层；下板使用 `test.v`。二者共用 CPU、指令 ROM 和数据 RAM，但用途不同：
-
-- `postsim_top.v`：暴露 `pc/inst/mem0/mem1`，便于时序报告和 timing simulation。
-- `test.v`：连接七段数码管，只保留板上真实 IO。
-
-命令行生成后仿真网表和 SDF：
-
-```powershell
-$env:CPU54_PERIOD_NS = "50.000"
-& "C:\Xilinx\Vivado\2016.2\bin\vivado.bat" -mode batch -source verify\run_postsim_timing.tcl
-```
-
-本轮已生成：
-
-- `postsim_top.dcp`
-- `postsim_timesim.v`
-- `postsim_timesim.sdf`
-
-我也加入了 `verify\run_postsim_timesim.ps1`，它直接用上述 timing netlist/SDF 跑 xsim。当前机器上 `xelab` 在静态展开完成后超过 10 分钟仍未产生 snapshot，因此按本次约定停止；这不是时序失败，时序报告已经通过。若在 Vivado GUI 中复现后仿真：
-
-1. 打开 `cpu_54.xpr`。
-2. 确认 `postsim_top.v` 设为综合顶层。
-3. Run Synthesis -> Run Implementation。
-4. Open Implemented Design。
-5. Flow Navigator 选择 `Run Simulation` -> `Run Post-Implementation Timing Simulation`。
-6. 若 Vivado 提示仿真顶层，选择 `postsim_tb.v` 或新建一个只驱动 `clk_in/reset`、观察 `pc/inst/mem0/mem1` 的 testbench。
-7. 正常现象：仿真能加载 `postsim_timesim.sdf`，波形中 `pc` 按程序流变化，`inst` 与 ROM 输出对应，没有 X 大面积扩散。
-
-## 下板与 Bitstream
-
-下板约束文件为 `cpu_54.srcs/constrs_1/new/icf.xdc`，来自老师 `icf.xdc`，时钟周期已改为 50ns：
-
-```tcl
-create_clock -period 50.000 -name clk_pin -waveform {0.000 25.000} [get_ports clk_in]
-```
-
-命令行生成 bitstream：
+### 7.6 生成下板 bitstream
 
 ```powershell
 & "C:\Xilinx\Vivado\2016.2\bin\vivado.bat" -mode batch -source verify\run_board_bitstream_direct.tcl
 ```
 
-本轮生成结果：
+预期输出：
 
 ```text
-BITSTREAM=D:/computer_composition/cpu_54/cpu_54.runs/board_direct/test.bit
+BITSTREAM=<仓库路径>\cpu_54.runs\board_direct\test.bit
 All user specified timing constraints are met.
 ```
 
-下板 GUI 复现：
+顶层为 `test.v`，使用约束 `cpu_54.srcs/constrs_1/new/icf.xdc`：
 
-1. 打开 `cpu_54.xpr`。
-2. 确认以下文件加入 Design Sources：`sccpu.v`、`regfile.v`、`scdatamem.v`、`scinstmem.v`、`cpu54_board.v`、`seg7x16.v`、`test.v`、`imem.xci`。
-3. 确认约束文件为 `cpu_54.srcs/constrs_1/new/icf.xdc`。
-4. 右键 `test.v`，选择 `Set as Top`。
-5. 若需要重新导入下板程序，双击 `imem.xci`，初始化文件选择 `materials/cpu54_frontsim/mips_54_mars_simulate_student_ForWeb_2024.coe`，然后 `Generate Output Products`。
-6. Run Synthesis -> Run Implementation -> Generate Bitstream。
-7. Open Hardware Manager，连接板卡，Program Device，选择生成的 `test.bit`。
-
-下板正确现象：
-
-- 复位按键有效：按住或拨到 reset 时，七段数码管显示回到起始 PC 附近。
-- 松开 reset 后，七段数码管显示当前 PC，约每 0.5 秒更新一次（约 2 步/秒），因为 `cpu54_board.v` 中默认 `CPU_STEP_DIVISOR = 50_000_000`，输入时钟为 100MHz。
-- PC 应按程序流前进，不应全灭、全亮、长时间固定在 reset 之外的随机值。
-- 遇到 `div/divu` 等多周期指令时，PC 会短暂停住，这是本设计为满足时序而实现的正常现象。
-- 使用当前网站 `.coe` 时，程序最终可能进入测试程序末尾循环；此时 PC 稳定在某个循环地址是正常的，不代表板子坏了。
-
-## 验证记录
-
-最终代码完成后，已执行：
-
-```text
-正式前仿真：web result matched 35836 lines OK
-全量单指令：ALL_HEX_CASES_PASSED 49
-CP0 专项：CP0 CHECK PASS: break/syscall/teq/eret handlers executed
-20MHz 时序：setup slack 13.120ns，All user specified timing constraints are met.
-下板 bitstream：cpu_54.runs/board_direct/test.bit，bitgen completed successfully.
+```tcl
+create_clock -period 50.000 -name clk_pin -waveform {0.000 25.000} [get_ports clk_in]
 ```
+
+**下板正确现象：**
+
+- 按下 / 拨到 reset 时，数码管回到起始 PC 附近；
+- 松开 reset 后数码管显示当前 PC，约每 0.5 秒更新一次（约 2 步/秒），
+  因为 `cpu54_board.v` 中 `CPU_STEP_DIVISOR = 50_000_000`，输入时钟 100MHz；
+- 遇到 `div/divu` 等多周期指令时 PC 会短暂停住，这是为满足时序而做的正常设计；
+- 程序跑到测试末尾循环时 PC 稳定在循环地址，也属正常。
+
+### 7.7 使用 Vivado GUI 复现
+
+**前仿真**
+
+1. `Open Project` → 选择 `cpu_54.xpr`；
+2. `Design Sources` 中确认包含：`sccpu.v`、`regfile.v`、`scdatamem.v`、`scinstmem.v`、
+   `sccomp_dataflow.v`、`imem.xci`；
+3. `Simulation Sources` 中确认包含 `testbench_cpu54_single.v`；
+4. 若 IP 未生成，右键 `imem.xci` → `Generate Output Products`；
+5. 如需重新导入标准程序：双击 `imem.xci` → 初始化文件选择
+   `materials/cpu54_frontsim/mips_54_mars_simulate_student_ForWeb_2024.coe` → 重新生成；
+6. `Run Simulation` → `Run Behavioral Simulation`；
+7. 仿真输出为根目录 `_246tb_ex10_result.txt`，用 `verify/compare_web_result.ps1` 比对。
+
+**时序检查**
+
+1. 打开 `cpu_54.xpr`，确认 `postsim_top.v` 已加入 `Design Sources` 并 `Set as Top`；
+2. 确认约束文件为 `cpu_54.srcs/constrs_1/new/icf.xdc`；
+3. `Run Synthesis` → `Run Implementation` → `Open Implemented Design`；
+4. `Reports` → `Timing` → `Report Timing Summary`，保存为 `timing_report.txt`；
+5. 检查报告中是否出现 `All user specified timing constraints are met.`
+
+> 后仿真说明：仓库提供了 `postsim_timesim.v` / `.sdf` 与 `verify/run_postsim_timesim.ps1`，
+> 但在原开发机上 `xelab` 静态展开超过 10 分钟仍未产出 snapshot，**这不是时序失败**，
+> 时序报告本身已通过。若需复现，可在 GUI 中选择
+> `Run Simulation → Run Post-Implementation Timing Simulation`，仿真顶层选 `postsim_tb.v`。
+
+---
+
+## 8. 目录结构说明
+
+| 路径 | 内容 |
+| --- | --- |
+| `cpu_54.srcs/sources_1/new/` | 手写 RTL：CPU 主体、控制器、ALU、寄存器堆、存储器、三个顶层（前仿真 / 后仿真 / 下板） |
+| `cpu_54.srcs/sources_1/ip/imem/` | Vivado `Distributed Memory Generator` IP，宽 32 位、深 2048，初始化来自课程下发的 `.coe` |
+| `cpu_54.srcs/sim_1/new/` | 前仿真 TB 与后仿真 TB |
+| `cpu_54.srcs/constrs_1/new/` | 下板约束（20MHz）与时序扫描用约束 |
+| `verify/` | 全部验证脚本、辅助 testbench、转换产物与日志 |
+| `materials/` | 课程下发资料（老师 TB、标准 COE、标准结果、课件 PDF） |
+| `datapath_diagrams/`、`instruction_flow_diagrams/` | 54 条指令的数据通路图与流程图，以及一张总数据通路图 |
+| `tmp/` | 报告 / 图形生成脚本与脚本运行时的临时文件 |
+| 根目录 `imem.mif` | 当前生效的 ROM 初始化文件；`run_hex_result_check.ps1`、`run_cp0_check.ps1` 会临时覆盖它 |
+
+---
+
+## 9. 第三方材料声明
+
+仓库本体（RTL、脚本、文档、图表）以 MIT 许可证发布，见 [LICENSE](LICENSE)。
+
+以下内容**不在本仓库许可证覆盖范围内**，版权归原作者（课程教师 / 教材作者）所有，
+仅作为课程作业配套资料随仓库一并保存，请勿二次分发或用于商业用途：
+
+- `materials/` 目录下全部内容：老师 testbench（`testbench_cpu54_single.v` / `testbench_cpu54_multiple.v`）、
+  标准测试程序 COE、标准结果文件、课件 PDF；
+- `cpu_54.srcs/sources_1/new/seg7x16.v`：课程提供的七段数码管驱动；
+- `cpu_54.srcs/sources_1/ip/imem/` 中由 Vivado 生成的部分文件：Xilinx IP 及其生成代码受
+  Xilinx 工具许可约束；
+- `cpu_54.srcs/constrs_1/new/icf.xdc`：基于课程提供的约束文件修改（时钟周期已改为 50ns）。
+
+如你 fork 本仓库用于学习或二次开发，请自行替换或移除上述第三方材料。
+
+---
+
+## 10. 许可证
+
+本仓库的自有代码与文档采用 **MIT License**，详见 [LICENSE](LICENSE)。
+选择 MIT 的理由：
+
+1. **课程作业属性**：本工程是课程实验实现，作者希望他人能够自由阅读、复刻、修改和复用 RTL 与验证脚本，
+   MIT 的"几乎无限制"最符合这一目的。
+2. **便于传播与二次开发**：MIPS CPU 实现属于教学参考性质，MIT 只要求保留版权声明，
+   对学术 / 教学场景的引用与派生最友好，不必处理 Apache-2.0 的专利与 NOTICE 条款。
+3. **避免传染性**：GPL-3.0 具有 copyleft 传染性，若他人的课程作业或私有工程引用本代码，
+   会被迫整体开源；教学参考代码通常不希望产生这种约束。
+4. **工具链兼容性**：工程中同时包含 Vivado 生成的 IP 文件与课程提供的第三方材料，
+   MIT 的宽松条款更便于在"自有代码开源、第三方材料保留原版权"的模式下声明。
