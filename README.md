@@ -62,6 +62,7 @@ cpu_54/
 │   │   ├── _246tb_ex10_result.txt                          # 前仿真标准结果
 │   │   ├── testbench_cpu54_single.v / testbench_cpu54_multiple.v
 │   │   └── 54条指令CPU_testbench_coe和结果比对文件说明.pdf
+│   ├── mips_54_mars_board_switch_student_2026.coe           # 最终下板验收程序 COE
 │   └── docs/                                # 课件 PDF（实验 5 / 实验 6 / 中断 / 扩展指令）
 │
 ├── verify/                                  # 自动化验证脚本（克隆后的主要入口）
@@ -122,6 +123,7 @@ cpu_54/
   - [7.5 后实现时序检查](#75-后实现时序检查)
   - [7.6 生成下板 bitstream](#76-生成下板-bitstream)
   - [7.7 使用 Vivado GUI 复现](#77-使用-vivado-gui-复现)
+  - [7.8 最终线下下板验收](#78-最终线下下板验收)
 - [8. 目录结构说明](#8-目录结构说明)
 - [9. 第三方材料声明](#9-第三方材料声明)
 - [10. 许可证](#10-许可证)
@@ -158,6 +160,7 @@ cpu_54/
 | CP0 专项（`break/syscall/teq/eret`） | `CP0 CHECK PASS` |
 | 后实现时序（20MHz） | Setup WNS `13.120ns`，`All user specified timing constraints are met.` |
 | 下板 bitstream | `cpu_54.runs/board_direct/test.bit` 生成成功 |
+| 线下下板验收 | 验收程序 `mips_54_mars_board_switch_student_2026.coe` 已写入 `imem` IP 并烧板演示 |
 
 标准输出说明：老师标准结果共有 `1054 × 34 = 35836` 行，其中每个结果块包含 `pc`、`instr` 和 32 个通用寄存器。
 
@@ -426,6 +429,49 @@ create_clock -period 50.000 -name clk_pin -waveform {0.000 25.000} [get_ports cl
 > 但在原开发机上 `xelab` 静态展开超过 10 分钟仍未产出 snapshot，**这不是时序失败**，
 > 时序报告本身已通过。若需复现，可在 GUI 中选择
 > `Run Simulation → Run Post-Implementation Timing Simulation`，仿真顶层选 `postsim_tb.v`。
+
+### 7.8 最终线下下板验收
+
+> 最终验收阶段，`imem` IP 的初始化文件已从标准前仿真程序
+> `mips_54_mars_simulate_student_ForWeb_2024.coe` 切换为下板验收程序
+> `materials/mips_54_mars_board_switch_student_2026.coe`
+> （对应 `imem.xci` 中 `PARAM_VALUE.coefficient_file` 的指向）。
+
+**验收前准备：**
+
+1. 确认 `cpu_54.srcs/sources_1/ip/imem/imem.xci` 的 `coefficient_file` 指向验收程序 COE；
+2. 右键 `imem.xci` → `Reset Output Products` → `Generate Output Products`，
+   让 `imem.mif`、`imem_stub.v`、`sim_scripts` 等生成物与 COE 重新同步；
+   这些都是可再生的生成物，**不要手工编辑** `imem.mif`；
+3. 按 [7.6](#76-生成下板-bitstream) 重新生成 bitstream，输出必须包含
+   `All user specified timing constraints are met.` 才可上板。
+
+**验收流程：**
+
+1. 通过 Hardware Manager 将 bitstream 烧写进板卡；
+2. 按下 reset，数码管回到起始 PC；
+3. 松开 reset 后观察数码管：PC 约每 0.5 秒推进一次
+   （`cpu54_board.v` 中 `CPU_STEP_DIVISOR = 50_000_000`，输入时钟 100MHz）；
+4. 程序跑至验收程序末尾循环时 PC 稳定在循环地址；遇到 `div/divu` 时 PC 短暂停住，
+   属迭代除法器多周期执行的正常设计。
+
+**验收正确现象（最终判据）：**
+
+- 复位释放后，数码管显示 `0040 0xxx` 附近的起始 PC，随后按 4 递增
+  （`xxxx` 从 `0xxx` 一直递增到 `0Cxx`）；
+- 递增过程中会先后短暂停留在 `0040 14xx` 与 `0040 13xx` 附近，
+  对应 `div/divu` 等多周期指令的执行；
+- 最终数码管稳定在 `0040 14xx` 附近循环——出现该现象即表明下板验收通过。
+
+**注意事项：**
+
+- **验收后复现回归**：如需重新跑前仿真 / 单指令回归，必须先把 `imem.xci` 的初始化文件
+  切回 `materials/cpu54_frontsim/mips_54_mars_simulate_student_ForWeb_2024.coe`
+  并重新 Generate Output Products，否则仿真跑的是验收程序而非标准测试程序；
+- `postsim_tb.v` 的输出块数已设为 `1054`（与标准结果 `35836 / 34` 一致），
+  后仿真比对时不要改回旧值 `256`；
+- `cpu_54.runs/`、`cpu_54.sim/`、`cpu_54.cache/`、`cpu_54.hw/`、`cpu_54.ip_user_files/`
+  与根目录 `imem.mif` 均为可再生产物，不属于验收交付物（见第 1 节树形图末尾说明）。
 
 ---
 
