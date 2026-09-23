@@ -92,17 +92,17 @@ cpu_54/
 │   ├── postsim_current.xdc                  # 时序脚本运行时生成的约束
 │   └── imem.mif.before_single_tests         # 跑回归前的 imem.mif 备份
 │
-├── imem.mif                                 # 当前生效的 ROM 初始化文件（脚本会覆盖它）
+├── imem.mif                                 # （不入库）脚本运行时从 IP 生成物复制而来
 ├── _246tb_ex10_result.txt                   # 前仿真输出（与 materials 中的标准结果比对）
 ├── hex_result_config.vh                     # 回归脚本生成的打印上限宏
 ├── hex_result_output.txt                    # 单指令回归最后一次的输出
-├── timing_report.txt                        # 20MHz 时序报告
+├── timing_report.txt                        # 20MHz 时序报告（豁免保留跟踪）
 ├── postsim_top.dcp                          # 综合后 checkpoint
 ├── postsim_timesim.v / postsim_timesim.sdf  # 后仿真网表与延时文件
 │
 └── cpu_54.runs/  cpu_54.sim/  cpu_54.cache/  cpu_54.hw/  cpu_54.ip_user_files/  xsim.dir/  .Xil/
     # Vivado 生成的中间目录：历史提交中曾包含副本，属于中间产物，
-    # 现已由 .gitignore 忽略，克隆后重新运行工程或脚本即可再生。
+    # 现已从版本库移除索引并由 .gitignore 忽略，克隆后重新运行工程或脚本即可再生。
 ```
 
 ---
@@ -487,7 +487,7 @@ create_clock -period 50.000 -name clk_pin -waveform {0.000 25.000} [get_ports cl
 | `materials/` | 课程下发资料（老师 TB、标准 COE、标准结果、课件 PDF） |
 | `datapath_diagrams/`、`instruction_flow_diagrams/` | 54 条指令的数据通路图与流程图，以及一张总数据通路图 |
 | `tmp/` | 报告 / 图形生成脚本与脚本运行时的临时文件 |
-| 根目录 `imem.mif` | 当前生效的 ROM 初始化文件；`run_hex_result_check.ps1`、`run_cp0_check.ps1` 会临时覆盖它 |
+| 根目录 `imem.mif` | 可再生的运行时文件（脚本从 IP 生成物复制/临时覆盖），已不入库；IP 初始化源为 `cpu_54.srcs/sources_1/ip/imem/imem.mif` |
 
 ---
 
