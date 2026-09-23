@@ -40,7 +40,7 @@ module postsim_tb;
             $fdisplay(outfile, "mem0: %h", mem0);
             $fdisplay(outfile, "mem1: %h", mem1);
             print_count = print_count + 1;
-            if (print_count == 256) begin
+            if (print_count == 1054) begin
                 $fclose(outfile);
                 $finish;
             end
